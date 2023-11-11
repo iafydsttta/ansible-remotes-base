@@ -1,0 +1,39 @@
+---
+# A few example tasks
+- name: Provision files
+  hosts: hosts_1
+  become: false
+  tasks:
+    - name: Copy common files to all hosts
+      ansible.builtin.copy:
+        src: "roles/common/files/{{ item }}"
+        dest: "{{ ansible_env.HOME }}/ansible-files/"
+        mode: "u=rw,g=r,o=r"
+      with_items:
+        - file1.txt
+        - file2.txt
+
+- name: Install dependencies
+  hosts: hosts_1
+  become: true
+  tasks:
+    - name: Unarchive dependencies
+      ansible.builtin.unarchive:
+        src: roles/common/files/deb-packages.tar
+        dest: /tmp/
+        mode: "0755"
+    - name: Install offline debian packages
+      ansible.builtin.shell: dpkg -i /tmp/deb-packages/*.deb
+
+- name: Remote host config
+  hosts: hosts_1
+  become: true
+  tasks:
+    - name: Copy host config script
+      ansible.builtin.copy:
+        src: roles/common/files/test.sh
+        dest: /tmp/
+        mode: "0755"
+    - name: Execute host config script
+      ansible.builtin.command: /tmp/test.sh
+      register: script_output
