@@ -19,11 +19,10 @@ In production, use ansible vault instead of storing credentials in inventory fil
 
 - 1: Create ssh keys (provisioner) `ssh-keygen -t rsa -b 4096`
 - 2: Trust ssh public key on remotes (run on provisoner) `ssh-copy-id remote_user@remote_host`
-
-`ansible-playbook site.yml -i hosts-ssh.ini`
+- 3: Run `ansible-playbook site.yml -i hosts-ssh.ini`
 
 ## ansible ssh via password
 
 - 1: Install on provisioner (host): `sudo apt install sshpass`
-
-`ansible-playbook site.yml -i hosts-ssh.ini`
+- 2: Add the remotes to the `known_hosts` on the control node or run: `export ANSIBLE_HOST_KEY_CHECKING=False`
+- 3: Run `ansible-playbook site.yml -i hosts-ssh.ini`
